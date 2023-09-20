@@ -30,7 +30,7 @@ class _MyHeaderDrawerState extends State<MyHeaderDrawer> {
           ),
           Text(
             "Doc everything you want",
-            style: TextStyle(color: Colors.black, fontSize: 15),
+            style: TextStyle(color: Colors.white, fontSize: 15),
           )
         ],
       ),

@@ -46,7 +46,7 @@ class _DrawerViewState extends State<DrawerView> {
         title: Text(
           widget.title,
           style: const TextStyle(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         elevation: 0,

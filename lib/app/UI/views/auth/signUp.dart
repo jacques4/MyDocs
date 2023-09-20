@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mydocs/app/UI/views/auth/signIn.dart';
+import 'package:mydocs/app/UI/views/homeView/home_view.dart';
 import 'package:mydocs/config/config.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
@@ -184,31 +185,42 @@ class _SignUpState extends State<SignUp> {
                       const SizedBox(height: 30),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Container(
-                          // height: 70,
-                          padding: const EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                              color: Config.colors.validateButton,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Center(
-                            child: TextButton(
-                                onPressed: () {
-                                  if (email != "" &&
-                                      password != "" &&
-                                      nomPrenom != "") {
-                                    Get.to(DrawerView(title: "MyDoc"));
-                                  } else {
-                                    setState(() {
-                                      login = false;
-                                    });
-                                  }
-                                },
-                                child: const Text("S'inscrire",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                    ))),
+                        child: TextButton(
+                          onPressed: () {
+                            if (email != "" &&
+                                password != "" &&
+                                nomPrenom != "") {
+                              Get.off(() => DrawerView(title: "My Docs"));
+                            } else {
+                              Get.snackbar(
+                                "Erreur de création de compte",
+                                "Vous devez fournir un nom , un email et un mot de passe",
+                                icon: Icon(
+                                  color: Colors.red,
+                                  Icons.error,
+                                ),
+                              );
+                            }
+                          },
+                          style: TextButton.styleFrom(
+                              backgroundColor: Config.colors.validateButton,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                    12.0), // Ajustez la valeur du rayon ici
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 12.0)),
+                          child: const SizedBox(
+                            width: double.infinity,
+                            child: Text(
+                              "S'inscrire",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
