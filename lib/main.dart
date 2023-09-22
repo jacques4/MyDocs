@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:mydocs/app/UI/myfilesView/myFiles.dart';
 import 'package:mydocs/app/UI/views/auth/signIn.dart';
+import 'package:mydocs/app/UI/views/homeView/home_view.dart';
+import 'package:mydocs/app/UI/views/settingsView/Settings.dart';
+import 'package:mydocs/widgets/drawerView.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -19,7 +23,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'My Docs',
       debugShowCheckedModeBanner: false,
-      home: const SignIn(),
+      home: SignIn(),
     );
   }
 

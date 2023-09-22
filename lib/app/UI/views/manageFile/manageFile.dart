@@ -47,6 +47,7 @@ class _ManageFileState extends State<ManageFile> {
                 ),
                 SizedBox(height: 30),
                 Container(
+                  padding: EdgeInsets.only(left: 5),
                   color: Config.colors.inputColor,
                   height: 200,
                   width: 250,
