@@ -138,16 +138,12 @@ class _ManageFileState extends State<ManageFile> {
                   child: const Text("Add A File",
                       style: TextStyle(color: Colors.white, fontSize: 22)),
                   style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical:
-                            12), // Add padding to increase the size of the button
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     minimumSize: Size(120, 36),
                     backgroundColor: Config.colors.appBarColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                          25.0), // Adjust the radius as needed
-                    ), // Background color for the // Background color for the "Continue" button
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
                   ),
                 ),
               ],

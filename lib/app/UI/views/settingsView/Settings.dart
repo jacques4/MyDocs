@@ -24,7 +24,7 @@ class Settings extends StatelessWidget {
         child: Container(
           child: Center(
             child: Text(
-              'send us a feedback osséa',
+              'settings pages',
             ),
           ),
         ),
