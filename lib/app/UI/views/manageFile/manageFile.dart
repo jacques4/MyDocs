@@ -46,55 +46,56 @@ class _ManageFileState extends State<ManageFile> {
                   color: Colors.red,
                 ),
                 SizedBox(height: 30),
-                Container(
-                  padding: EdgeInsets.only(left: 5),
-                  color: Config.colors.inputColor,
-                  height: 200,
-                  width: 250,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Center(
-                        child: isFileSelected
-                            ? Image.asset('assets/images/pdf.png', width: 100)
-                            : Icon(Icons.attach_file, size: 100),
-                      ),
-                      TextButton(
-                        onPressed: () async {
-                          FilePickerResult? result =
-                              await FilePicker.platform.pickFiles(
-                            type: FileType.custom,
-                            allowedExtensions: ['pdf'],
-                          );
-                          if (result != null) {
-                            PlatformFile file = result.files.first;
+                InkWell(
+                  onTap: () async {
+                    FilePickerResult? result =
+                        await FilePicker.platform.pickFiles(
+                      type: FileType.custom,
+                      allowedExtensions: ['pdf'],
+                    );
+                    if (result != null) {
+                      PlatformFile file = result.files.first;
 
-                            setState(() {
-                              fileName = file.name;
-                              isFileSelected = true;
-                            });
+                      setState(() {
+                        fileName = file.name;
+                        isFileSelected = true;
+                      });
 
-                            print(file.name);
-                            print(file.bytes);
-                            print(file.size);
-                            print(file.extension);
-                            print(file.path);
-                          } else {
-                            // User canceled the picker
-                          }
-                        },
-                        child: Text("Attach a file",
-                            style:
-                                TextStyle(fontSize: 30, color: Colors.black)),
-                      ),
-                      if (fileName != null)
-                        Expanded(
-                          child: Text(
-                            '$fileName',
-                            style: TextStyle(fontSize: 16),
-                          ),
+                      print(file.name);
+                      print(file.bytes);
+                      print(file.size);
+                      print(file.extension);
+                      print(file.path);
+                    } else {
+                      // L'utilisateur a annulé la sélection du fichier
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.only(left: 5),
+                    color: Config.colors.inputColor,
+                    height: 200,
+                    width: 250,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Center(
+                          child: isFileSelected
+                              ? Image.asset('assets/images/pdf.png', width: 100)
+                              : Icon(Icons.attach_file, size: 100),
                         ),
-                    ],
+                        Text(
+                          "Attach a file",
+                          style: TextStyle(fontSize: 25, color: Colors.black),
+                        ),
+                        if (fileName != null)
+                          Expanded(
+                            child: Text(
+                              '$fileName',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -135,7 +136,9 @@ class _ManageFileState extends State<ManageFile> {
                 ),
                 SizedBox(height: 40),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Post document file
+                  },
                   child: const Text("Add A File",
                       style: TextStyle(color: Colors.white, fontSize: 22)),
                   style: ElevatedButton.styleFrom(

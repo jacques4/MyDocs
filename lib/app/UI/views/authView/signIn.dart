@@ -1,10 +1,9 @@
 import 'package:get/get.dart';
-import 'package:mydocs/app/UI/views/auth/signUp.dart';
-import 'package:mydocs/app/UI/views/homeView/home_view.dart';
+import 'package:mydocs/app/UI/views/authView/signUp.dart';
+import 'package:mydocs/app/services/auth/signIn_service.dart';
 import 'package:mydocs/config/config.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:mydocs/widgets/drawerView.dart';
 import 'package:mydocs/widgets/textfield.dart';
 
 class SignIn extends StatefulWidget {
@@ -35,6 +34,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    SignInService _signService = SignInService();
     return Scaffold(
       body: Container(
         color: Config.colors.appBarColor,
@@ -108,7 +108,8 @@ class _SignInState extends State<SignIn> {
                         child: TextButton(
                           onPressed: () {
                             if (email != "" && password != "") {
-                              Get.off(() => DrawerView(title: "My Docs"));
+                              _signService.loginUser(context,
+                                  emailController.text, mdpController.text);
                             } else {
                               Get.snackbar(
                                 "Erreur d'authentification",

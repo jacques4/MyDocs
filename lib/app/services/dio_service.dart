@@ -23,4 +23,21 @@ class DioService {
       return response;
     });
   }
+
+  Future<dynamic> postMethod(String url) async {
+    Dio dio = Dio();
+
+    return dio
+        .post(
+      url,
+      options: Options(
+        responseType: ResponseType.json,
+        method: 'POST',
+      ),
+    )
+        .then((response) {
+      log(response.toString());
+      return response;
+    });
+  }
 }

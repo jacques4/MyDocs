@@ -47,6 +47,8 @@ dependencies:
   path_provider: ^2.0.10
   flutter_svg: ^1.1.0
   adaptive_theme: ^3.4.0
+  connectivity: ^3.0.6
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

@@ -31,7 +31,7 @@ class _DrawerViewState extends State<DrawerView> {
     } else if (currentPage == DrawerSection.account) {
       container = const AccountView();
     } else if (currentPage == DrawerSection.folder) {
-      container = const MyFiles();
+      container = MyFiles();
     } else if (currentPage == DrawerSection.privacy_policy) {
       container = PrivacyPolicyPage();
     } else if (currentPage == DrawerSection.send_feedback) {

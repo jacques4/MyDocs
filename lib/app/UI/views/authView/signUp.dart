@@ -1,10 +1,11 @@
 import 'package:get/get.dart';
-import 'package:mydocs/app/UI/views/auth/signIn.dart';
-import 'package:mydocs/app/UI/views/homeView/home_view.dart';
+import 'package:mydocs/app/UI/views/authView/signIn.dart';
+import 'package:mydocs/app/services/auth/signUp_service.dart';
 import 'package:mydocs/config/config.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-import 'package:mydocs/widgets/drawerView.dart';
+import 'package:mydocs/models/etudiants.dart';
 import 'package:mydocs/widgets/textfield.dart';
 
 class SignUp extends StatefulWidget {
@@ -15,23 +16,30 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
-  final TextEditingController nomPrenomController = TextEditingController();
-  final TextEditingController filiereController = TextEditingController();
+  final TextEditingController nomController = TextEditingController();
+  final TextEditingController prenomController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   final List<String> _filiere = ["TC1", "TC2", "ASR", "GLSI"];
-  String? _selectedValue;
+  String? _selectedFiliere;
 
   bool SeePass = true;
-  String nomPrenom = "";
+  String nom = "";
+  String prenom = "";
   String email = "";
   String password = "";
   bool login = true;
 
-  void getNomPrenom(String value) {
+  void getNom(String value) {
     setState(() {
-      nomPrenom = value;
+      nom = value;
+    });
+  }
+
+  void getPrenom(String value) {
+    setState(() {
+      prenom = value;
     });
   }
 
@@ -93,17 +101,31 @@ class _SignUpState extends State<SignUp> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      const SizedBox(height: 50),
+                      const SizedBox(height: 20),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: MyInput(
                           icon: Icons.person_outlined,
                           keyboardType: TextInputType.text,
-                          textEditingController: nomPrenomController,
+                          textEditingController: nomController,
                           isGood: login,
-                          errorMessage: "Nom et Prénom(s) invalide",
-                          placeholder: "Nom et Prénom(s)",
-                          onchange: getNomPrenom,
+                          errorMessage: "Nom invalide",
+                          placeholder: "Nom",
+                          onchange: getNom,
+                          enable: true,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: MyInput(
+                          icon: Icons.person_outlined,
+                          keyboardType: TextInputType.text,
+                          textEditingController: prenomController,
+                          isGood: login,
+                          errorMessage: "Prénom(s) invalide",
+                          placeholder: "Prénom(s)",
+                          onchange: getPrenom,
                           enable: true,
                         ),
                       ),
@@ -119,12 +141,12 @@ class _SignUpState extends State<SignUp> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 15.0),
                             child: DropdownButtonFormField<String>(
-                              value: _selectedValue,
+                              value: _selectedFiliere,
                               onChanged: (newValue) {
                                 setState(() {
-                                  _selectedValue = newValue
+                                  _selectedFiliere = newValue
                                       .toString(); // Mettre à jour la valeur sélectionnée
-                                  print(_selectedValue);
+                                  print(_selectedFiliere);
                                 });
                               },
                               items: _filiere
@@ -187,14 +209,27 @@ class _SignUpState extends State<SignUp> {
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: TextButton(
                           onPressed: () {
+                            SignUpService _signUpEtudiant = SignUpService();
+                            DateTime specificDate =
+                                DateTime.parse('2005-09-10');
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd').format(specificDate);
                             if (email != "" &&
                                 password != "" &&
-                                nomPrenom != "") {
-                              Get.off(() => DrawerView(title: "My Docs"));
+                                nom != "" &&
+                                prenom != "") {
+                              Etudiants newEtudiant = Etudiants(
+                                  nom: nomController.text,
+                                  prenoms: prenomController.text,
+                                  dateNaissance: formattedDate,
+                                  email: emailController.text,
+                                  lieuNaissance: "undefined",
+                                  password: passwordController.text);
+                              _signUpEtudiant.SignUpUser(context, newEtudiant);
                             } else {
                               Get.snackbar(
                                 "Erreur de création de compte",
-                                "Vous devez fournir un nom , un email et un mot de passe",
+                                "Vous devez fournir un nom, prenom(s), un email et un mot de passe",
                                 icon: Icon(
                                   color: Colors.red,
                                   Icons.error,
@@ -224,7 +259,7 @@ class _SignUpState extends State<SignUp> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -241,7 +276,7 @@ class _SignUpState extends State<SignUp> {
                           )
                         ],
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [

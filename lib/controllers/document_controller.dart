@@ -2,12 +2,14 @@ import 'package:get/get.dart';
 import 'package:mydocs/app/services/dio_service.dart';
 import 'package:mydocs/models/document.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:mydocs/routes/api_url.dart';
 
 class DocumentController extends GetxController {
   RxList<Document> documents = RxList();
   RxBool isLoading = false.obs;
   RxBool isInternetConnect = true.obs;
   var url = 'https://mockend.com/Adocal5353/MyDocs/documents?limit=10';
+  String urls = SIGNIN_URL;
 
   getDocuments() async {
     isInternetConnectFunc();

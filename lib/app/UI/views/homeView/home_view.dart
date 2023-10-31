@@ -1,43 +1,31 @@
-// ignore_for_file: must_be_immutable
+// ignore_for_file: must_be_immutable, unused_element
 
+import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mydocs/config/config.dart';
-import 'package:mydocs/controllers/document_controller.dart';
-import 'package:mydocs/models/document.dart';
-import 'package:mydocs/widgets/docView.dart';
+import 'package:mydocs/routes/api_url.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   HomeView({Key? key}) : super(key: key);
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   final Radius containerRaduis = const Radius.circular(30);
-  DocumentController documentController = Get.put(DocumentController());
-  var documents = [
-    new Document("evefv", 1, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 2, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 3, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 4, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 5, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 6, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 7, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 8, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 9, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 10, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100),
-    new Document("evefv", 11, "Caleb", "Good news",
-        "La bonne nouvelle doit être propagé dans tout le monde", 100)
-  ];
+
+  final dio = Dio();
+
+  Future<List<dynamic>>? documentsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    documentsFuture = fetchDocuments();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -80,55 +68,55 @@ class HomeView extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () {
-                    return documentController.getDocuments();
-                  },
-                  color: Colors.deepPurpleAccent,
-                  child: GetBuilder<DocumentController>(
-                    id: 1,
-                    builder: (_) => SingleChildScrollView(
-                      child: !documentController.isInternetConnect.value
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    height: 150,
-                                    width: 150,
-                                    child: Lottie.asset(
-                                        'assets/animations/no-internet.json'),
-                                  ),
-                                  MaterialButton(
-                                    onPressed: () async {
-                                      if (await InternetConnectionChecker()
-                                              .hasConnection ==
-                                          true) {
-                                        documentController.getDocuments();
-                                      } else {
-                                        showCustomSnackBar(context,
-                                            "Erreur, Veuillez vérifier votre connexion internet.");
-                                      }
-                                    },
-                                    color: Colors.red.shade300,
-                                    child: Text(
-                                      "Réessayer",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 12),
+              FutureBuilder<List<dynamic>>(
+                future: documentsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return _buildLoading();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    return Expanded(
+                      child: ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 251, 240, 240),
+                                  borderRadius: BorderRadius.circular(12)),
+                              child: ListTile(
+                                leading: Image.asset('assets/images/pdf.png'),
+                                title: Row(
+                                  children: [
+                                    Text("Fichier : "),
+                                    Text(snapshot.data![index]['libelle']),
+                                  ],
+                                ),
+                                subtitle:
+                                    Text(snapshot.data![index]['cheminAccess']),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(Icons.more_vert),
+                                      onPressed: () {
+                                        // Votre code ici...
+                                      },
                                     ),
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
-                            )
-                          : documentController.isLoading.value
-                              ? _buildLoading()
-                              : _buildBody(),
-                    ),
-                  ),
-                ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  } else {
+                    return _buildavailableData();
+                  }
+                },
               ),
             ],
           ),
@@ -137,20 +125,21 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildBody() {
-    return ListView.separated(
-      itemCount: documents.length,
-      itemBuilder: (context, index) {
-        return docWait(documents[index]);
-      },
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      separatorBuilder: (context, index) {
-        return SizedBox(
-          height: 8,
-        );
-      },
-    );
+  Future<List<dynamic>> fetchDocuments() async {
+    print("List of documents");
+
+    String documentsUrl = DOCUMENTS_URL;
+    try {
+      final response = await Dio().get(documentsUrl);
+      print(response.data);
+      List<dynamic> results = response.data['resultat'];
+      print("Get of documents success !");
+      return results;
+    } catch (e) {
+      print("An error occurred: $e");
+      throw Exception(
+          'Une erreur s\'est produite lors de la récupération des documents.');
+    }
   }
 
   Center _buildLoading() {
@@ -161,6 +150,16 @@ class HomeView extends StatelessWidget {
         child: Lottie.asset(
           'assets/animations/docloader.json',
         ),
+      ),
+    );
+  }
+
+  Center _buildavailableData() {
+    return Center(
+      child: SizedBox(
+        height: 150,
+        width: 150,
+        child: Lottie.asset('assets/animations/no-internet.json'),
       ),
     );
   }
